@@ -22,12 +22,30 @@ export default function Home() {
   // 4. make the user name look good
   // 5. let the user post their own reply
 
-  const [account, setAccount] = useState()
+  const [accounts, setAccounts] = useState([])
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const connect = async function () {
     let a = await window.ethereum.request({ method: "eth_requestAccounts" })
-    setAccount(a)
+    setAccounts(a)
   }
+
+  useEffect(function () {
+    if (accounts.length > 0) {
+      setIsLoggedIn(true)
+    } else {
+      setIsLoggedIn(false)
+    }
+  }, [accounts])
+
+  useEffect(async function () {
+    let a = await window.ethereum.request({ method: "eth_accounts" })
+    setAccounts(a)
+
+    window.ethereum.on("accountsChanged", function (a) {
+      setAccounts(a)
+    })
+  }, [])
 
   return (
     <main>
@@ -38,7 +56,7 @@ export default function Home() {
           <input type="text" placeholder="Search" />
         </form>
 
-        <Account account={account} connect={connect} />
+        <Account accounts={accounts} isLoggedIn={isLoggedIn} connect={connect} />
       </header>
 
       <section className="question">
