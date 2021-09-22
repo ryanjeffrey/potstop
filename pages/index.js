@@ -24,6 +24,8 @@ export default function Home() {
 
   const [accounts, setAccounts] = useState([])
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [answers, setAnswers] = useState([])
 
   const connect = async function () {
     let a = await window.ethereum.request({ method: "eth_requestAccounts" })
@@ -45,7 +47,24 @@ export default function Home() {
     window.ethereum.on("accountsChanged", function (a) {
       setAccounts(a)
     })
+
+    fetch("/api/answers")
+      .then(response => response.json())
+      .then(data => { 
+        setAnswers(data.answers)
+        setIsLoading(false)
+      })
   }, [])
+
+  let answersArea = (
+    <div className="loading">Loading the answers...</div>
+  )
+
+  if (!isLoading) {
+    answersArea = answers.map(function (answer, index) {
+      return <Answer number={index + 1} answer={answer} accounts={accounts} isLoggedIn={isLoggedIn}/>
+    })
+  }
 
   return (
     <main>
@@ -88,7 +107,7 @@ export default function Home() {
       </section>
 
       <section className="answers">
-        <div className="loading">Loading answers...</div>
+        {answersArea}
       </section>
 
       <Head>
