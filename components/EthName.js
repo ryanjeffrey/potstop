@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { web3 } from '../lib/web3';
 
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
-import ENS, { getEnsAddress } from "@ensdomains/ensjs";
+import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 
 const ens = new ENS({ 
   provider: web3.currentProvider, 
